@@ -1,0 +1,18 @@
+{
+  "name": "challenge-02-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Jackson dos Santos Moura",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^4.15.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
