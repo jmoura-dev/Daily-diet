@@ -2,7 +2,7 @@
 
 - [ ] O usuário deve poder criar uma conta;
 - [ ] Deve ser possível identificar o usuário entre as requisições;
-- [ ] - Deve ser possível registrar uma refeição feita, com as seguintes informações:
+- [ ] Deve ser possível registrar uma refeição feita, com as seguintes informações:
     *As refeições devem ser relacionadas a um usuário.*
     - Nome
     - Descrição
