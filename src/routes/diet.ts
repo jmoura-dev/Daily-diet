@@ -4,22 +4,26 @@ import { z } from 'zod'
 import { randomUUID } from 'node:crypto'
 
 export async function mealRoutes(app: FastifyInstance) {
-  app.post('/', async (req, res) => {
+  app.post('/:userId', async (req, res) => {
     const createSchemaMeal = z.object({
       name: z.string(),
       description: z.string(),
-      isDiet: z.enum(['true', 'false']),
-      user_id: z.string(),
+      isDiet: z.boolean(),
+    })
+
+    const createSchemaParamsMeal = z.object({
+      userId: z.string(),
     })
 
     const { name, description, isDiet } = createSchemaMeal.parse(req.body)
-    const { user_id } = createSchemaMeal.parse(req.params)
+    const { userId } = createSchemaParamsMeal.parse(req.params)
+    console.log(name, description, isDiet)
 
     if (!name || !description || !isDiet) {
       throw new Error('[401] Preecha todos os campos para registar a refeição')
     }
 
-    if (!user_id) {
+    if (!userId) {
       throw new Error('Usuário não identificado.')
     }
 
@@ -28,7 +32,7 @@ export async function mealRoutes(app: FastifyInstance) {
       name,
       description,
       isDiet,
-      user_id,
+      user_id: userId,
     })
 
     return res.status(201).send()

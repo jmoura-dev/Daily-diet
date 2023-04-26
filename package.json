@@ -12,6 +12,7 @@
   "author": "Jackson dos Santos Moura",
   "license": "ISC",
   "dependencies": {
+    "@fastify/cookie": "^8.3.0",
     "bcrypt": "^5.1.0",
     "dotenv": "^16.0.3",
     "fastify": "^4.15.0",
