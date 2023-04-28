@@ -3,7 +3,7 @@ import { knex } from '../database'
 import { z } from 'zod'
 import { randomUUID } from 'node:crypto'
 
-export async function mealRoutes(app: FastifyInstance) {
+export async function mealsRoutes(app: FastifyInstance) {
   app.post('/:userId', async (req, res) => {
     const createSchemaMeal = z.object({
       name: z.string(),
@@ -66,7 +66,7 @@ export async function mealRoutes(app: FastifyInstance) {
       throw new Error('Este usuário não tem nenhuma refeição')
     }
 
-    return res.status(201).send(listMealsUser)
+    return res.status(200).send(listMealsUser)
   })
 
   app.put('/:id', async (req, res) => {

@@ -3,6 +3,7 @@ import { knex } from '../database'
 import { randomUUID } from 'node:crypto'
 import { z } from 'zod'
 import { hash } from 'bcrypt'
+import { checkSessionIdExists } from '../middlewares/check-sessionId-exists'
 
 export async function usersRoutes(app: FastifyInstance) {
   app.post('/', async (req, res) => {
@@ -11,6 +12,17 @@ export async function usersRoutes(app: FastifyInstance) {
       email: z.string(),
       password: z.string(),
     })
+
+    let sessionId = req.cookies.sessionId
+
+    if (!sessionId) {
+      sessionId = randomUUID()
+
+      res.cookie('sessionId', sessionId, {
+        path: '/',
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      })
+    }
 
     const { name, email, password } = definitionSchemaUsers.parse(req.body)
 
@@ -36,25 +48,57 @@ export async function usersRoutes(app: FastifyInstance) {
     return res.status(201).send()
   })
 
-  app.get('/', async (req, res) => {
-    const user = await knex('users').select('*')
+  app.get(
+    '/:userId',
+    {
+      preHandler: [checkSessionIdExists],
+    },
+    async (req, res) => {
+      const createSchemaGetUsers = z.object({
+        userId: z.string(),
+      })
 
-    return res.status(200).send(user)
-  })
+      const { userId } = createSchemaGetUsers.parse(req.params)
 
-  app.delete('/:id', async (req, res) => {
-    const createSchemaDeleteMeal = z.object({
-      id: z.string(),
-    })
+      const users = await knex('users').where({ id: userId }).first()
+      const meals = await knex('meals').where({ user_id: userId })
 
-    const { id } = createSchemaDeleteMeal.parse(req.params)
+      const mealsIsDiet = meals.filter((meal) => meal.isDiet === 'true')
+      const mealsNotIsDiet = meals.filter((meal) => meal.isDiet === 'false')
 
-    const user = await knex('users').where({ id }).delete()
+      const amountOfMeals = meals.length
+      const amountOfMealsIsDiet = mealsIsDiet.length
+      const amountOfMealsNotIsDiet = mealsNotIsDiet.length
 
-    if (!user) {
-      throw new Error('Usuário não identificado.')
-    }
+      return res.send({
+        ...users,
+        meals,
+        amountOfMeals,
+        amountOfMealsIsDiet,
+        amountOfMealsNotIsDiet,
+      })
+    },
+  )
 
-    return res.status(200).send()
-  })
+  app.delete(
+    '/:id',
+    {
+      preHandler: [checkSessionIdExists],
+    },
+    async (req, res) => {
+      const createSchemaDeleteMeal = z.object({
+        id: z.string(),
+      })
+
+      const { id } = createSchemaDeleteMeal.parse(req.params)
+
+      const user = await knex('users').where({ id }).delete()
+
+      if (!user) {
+        throw new Error('Usuário não identificado.')
+      }
+
+      return res.status(200).send()
+    },
+  )
 }

@@ -3,16 +3,16 @@ import { env } from './env'
 import cookie from '@fastify/cookie'
 
 import { usersRoutes } from './routes/users'
-import { mealRoutes } from './routes/diet'
+import { mealsRoutes } from './routes/diet'
 
 const app = fastify()
-app.register(cookie)
 
+app.register(cookie)
 app.register(usersRoutes, {
   prefix: 'users',
 })
 
-app.register(mealRoutes, {
+app.register(mealsRoutes, {
   prefix: 'meals',
 })
 
