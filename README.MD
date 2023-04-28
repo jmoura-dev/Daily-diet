@@ -15,7 +15,6 @@
     - Quantidade total de refeições registradas;
     - Quantidade total de refeições dentro da dieta;
     - Quantidade total de refeições fora da dieta;
-    - Melhor sequência por dia de refeições dentro da dieta;
 
 ### Regras de Negócios(RN)
 - [x] O usuário só pode visualizar, editar e apagar as refeições o qual ele criou;
